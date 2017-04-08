@@ -23,7 +23,7 @@ namespace LibraryConsole
             Console.WriteLine("Add a new book to the library                        [2]");
             Console.WriteLine("Delete a book                                        [3]");
             Console.WriteLine("Update a book's information                          [4]");
-            /*not done*/Console.WriteLine("See what books are checked out/are available         [5]");
+            Console.WriteLine("See what books are checked out/are available         [5]");
             /*not done*/Console.WriteLine("Check out a book                                     [6]");
             
 
@@ -190,6 +190,42 @@ namespace LibraryConsole
             //get checked out/available books
             else if (int.Parse(userChoice) == 5)
             {
+                Console.WriteLine("Do you want to see [checked out] books or [available] books?");
+                var checkedOutStatus = Console.ReadLine();
+                var isCheckedOut = String.Empty;
+                if (checkedOutStatus == "checked out")
+                {
+                    isCheckedOut = "True";
+                }
+                else if (checkedOutStatus == "available")
+                {
+                    isCheckedOut = "False";
+                }
+
+
+                url = $"http://localhost:52489/api/checkout/GetBooks?IsCheckedOut={isCheckedOut}";
+                var request = WebRequest.Create(url);
+                var response = request.GetResponse();
+                var rawResponse = String.Empty;
+                using (var reader = new StreamReader(response.GetResponseStream()))
+                {
+                    while (reader.Peek() > -1)
+                    {
+                        rawResponse = reader.ReadLine();
+                    }
+                }
+
+                var trimmedRawResponse = rawResponse.Trim(new Char[] { '[', ' ', ']' });
+                var array = trimmedRawResponse.Split(',');
+                foreach (var bookString in array)
+                {
+                    Console.WriteLine(bookString.Trim(new Char[] { '"' }));
+                }
+            }
+            //check out a book
+            else if (int.Parse(userChoice) == 6)
+            {
+
             }
 
             Console.ReadLine();
