@@ -24,7 +24,7 @@ namespace LibraryConsole
             Console.WriteLine("Delete a book                                        [3]");
             Console.WriteLine("Update a book's information                          [4]");
             Console.WriteLine("See what books are checked out/are available         [5]");
-            /*not done*/Console.WriteLine("Check out a book                                     [6]");
+            Console.WriteLine("Check out a book                                     [6]");
             
 
             var userChoice = Console.ReadLine();
@@ -225,7 +225,26 @@ namespace LibraryConsole
             //check out a book
             else if (int.Parse(userChoice) == 6)
             {
+                Console.WriteLine("Enter the ID of the book you want to check out");
+                var bookID = Console.ReadLine();
 
+                url = $"http://localhost:52489/api/checkout/CheckOutBook?ID={bookID}";
+                var request = WebRequest.Create(url);
+                request.Method = "POST";
+
+                var json = $"{{\"ID\":\"{bookID}\"}}";
+
+                using (var writer = new StreamWriter(request.GetRequestStream()))
+                {
+                    writer.Write(json);
+                    writer.Flush();
+                }
+
+                var response = request.GetResponse();
+                using (var reader = new StreamReader(response.GetResponseStream()))
+                {
+                    Console.WriteLine(reader.ReadLine());
+                }
             }
 
             Console.ReadLine();
